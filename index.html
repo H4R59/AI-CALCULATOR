@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SeeYourAI - Premium Exam Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d0d;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ffffff;
+      text-shadow: 0 0 5px #888;
+    }
+
+    .calculator {
+      background: #1c1c1c;
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      background: #2a2a2a;
+      color: #00f2fe;
+      font-size: 16px;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background: #00f2fe;
+      border: none;
+      color: #000;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00c4d6;
+    }
+
+    .result-box {
+      margin-top: 30px;
+      background: #121212;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 6px solid #00f2fe;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step {
+      margin-top: 10px;
+      color: #a0d8f7;
+    }
+
+    .exam-tag {
+      font-weight: bold;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to SeeYourAI</h1>
+
+  <div class="calculator">
+    <textarea id="questionInput" placeholder="Paste your math or physics question here..."></textarea>
+    <button onclick="solveQuestion()">🔍 Solve with AI</button>
+    <div class="result-box" id="resultBox" style="display:none">
+      <div class="exam-tag" id="examType"></div>
+      <div class="step" id="step1"></div>
+      <div class="step" id="step2"></div>
+      <div class="step" id="step3"></div>
+    </div>
+  </div>
+
+  <script>
+    function detectExamType(text) {
+      text = text.toLowerCase();
+      if (text.includes('velocity') || text.includes('gravity')) return '📗 Physics - JEE/NEET';
+      if (text.includes('limit') || text.includes('integration')) return '📘 Math - JEE Advanced';
+      if (text.includes('profit') || text.includes('ratio')) return '📙 Aptitude - SSC/Banking';
+      if (text.includes('log') || text.includes('complex')) return '📕 Advanced Math - GATE/CA';
+      return '📙 General Competitive Exam';
+    }
+
+    function solveQuestion() {
+      const input = document.getElementById("questionInput").value;
+      const exam = detectExamType(input);
+      const resultBox = document.getElementById("resultBox");
+
+      let solution = '';
+      let result = '';
+
+      try {
+        const expr = input.match(/([\d+\-*/().^\s]+|[a-zA-Z]+)/g)?.join(' ');
+        result = math.evaluate(expr);
+        solution = `Expression: ${expr}`;
+      } catch (err) {
+        result = '❌ Could not solve. Try entering a valid math expression.';
+      }
+
+      document.getElementById("examType").innerText = exam;
+      document.getElementById("step1").innerText = solution;
+      document.getElementById("step2").innerText = `Answer: ${result}`;
+      document.getElementById("step3").innerText = `🤖 Hint: Break it into basic formulas if complex.`;
+      resultBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
